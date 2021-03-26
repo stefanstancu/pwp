@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html>
+    <header>
+        <title>Stefan Stancu</title>
+    </header>
+    <body>
+        <div id="navBar">
+            <div id="experience">
+                <a href="#">Experience</a>
+            </div>
+            <div id="school">
+                <a href="#">School</a>
+            </div>
+            <div id="projects">
+                <a href="#">Projects</a>
+            </div>
+            <div id="contact">
+                <a href="#">Contact</a>
+            </div>
+        </div>
+        <div id="body">
+            <h1 id="name">Stefan Stancu</h1>
+            <h3 id="subName">Software Developer (with a sense of adventure)</h3>
+            <div id="mainBody">
+                <div id="cnt_experience">
+                    <h2>Experience</h2>
+                    <table>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td class="cmp">Intel</td>
+                            <td>Software Engineer</td>
+                            <td class="date">May 2019 - June 2020</td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="plc">San Jose, CA</span>
+                            </td>
+                            <td colspan="3">
+                                <ul>
+                                    <li>Coordinated large codebase compilation among 40 machines and 2k+ developers</li>
+                                    <li>Lead development of in house CI tools on Django to alleviate developer bottlenecks</li>
+                                    <li>Debugged time-sensitive gcc non-determinism issues in teams with developers</li>
+                                    <li>Built and deployed source code file diff at scale as an automated changelist monitoring tool</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td class="cmp">Vivovii</td>
+                            <td>Data Science Intern</td>
+                            <td class="date">May 2018 - August 2018</td>
+                        </tr>
+                        <tr>
+                            <td rowspan="3">
+                                <span class="plc">Toronto, ON</span>
+                            </td>
+                            <td colspan="3">
+                                <ul>
+                                    <li>Refined business KPIs and north-start metric using quantitative feedback</li>
+                                    <li>Integrated Tableau with existing in-house authentication service</li>
+                                    <li>Designed and built tableau dashboard for user-data visualization</li>
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="cmp">Autocase</td>
+                            <td>Full Stack Engineer</td>
+                            <td class="date">May 2017 - August 2017</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3">
+                                <ul>
+                                    <li>Developed Django app automating 4 weeks of data entry</li>
+                                    <li>Improved code coverage by 20% with automated unit & integration tests with GitLab-CI</li>
+                                    <li>Worked in a scrum with Kanban practices using JIRA, code reviewsand ticket grooming</li>
+                                    <li>Incrementally retrofitted Django stack with micro-service architecture</li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="cnt_school">School</div>
+                <div id="cnt_projects">Projects</div>
+                <div id="cnt_contact">Contact</div>
+                <div id="cnt_ball"></div>
+            </div>
+        </div>
+    <script>
+        var vp, camera, controls, scene, renderer, effect;
+        var tabs = ["experience", "school", "projects", "contact"];
+
+        for (let tab of tabs){
+            let anchor = document.getElementById(tab);
+            anchor.onclick = function () {
+                hideAll();
+                document.getElementById("cnt_" + tab).style["contentVisibility"] = "visible";
+                setBallWindow();
+            }
+        }
+        hideAll();
+        setMainBodyHeight();
+
+        function hideAll() {
+            for (let tab of tabs){
+                document.getElementById("cnt_" + tab).style["contentVisibility"] = "hidden";
+            }
+        };
+
+        function setMainBodyHeight() {
+            var offset = 10;
+            offset += getElHeight("name");
+            offset += getElHeight("subName");
+
+            var height = window.innerHeight - offset;
+            document.getElementById("mainBody").style["height"] = height.toString() + "px";
+        };
+
+        function setBallWindow() {
+            var offset = 0;
+            var el_visible = getVisible();
+            offset += getElHeight(el_visible);
+            offset += getElHeight("name");
+            offset += getElHeight("subName");
+
+            var height = window.innerHeight - offset;
+            document.getElementById("cnt_ball").style["height"] = height.toString() + "px";
+            onWindowResize();
+        };
+        
+        function getElHeight(el) {
+            if (typeof(el) === "string")
+                el = document.getElementById(el);
+            var height = el.offsetHeight;
+            var style = window.getComputedStyle ? getComputedStyle(el, null): el.currentStyle;
+            height += parseInt(style.marginTop) || 0;
+            height += parseInt(style.marginBottom) || 0;
+            return height;
+        };
+
+        function getVisible() {
+            for (let tab of tabs){
+                var anchor = document.getElementById("cnt_" + tab);
+                if (anchor.style["contentVisibility"] === "visible")
+                    return anchor;
+            }
+            return null;
+        };
+
+        function onWindowResize() {
+            vp = document.getElementById("cnt_ball").getBoundingClientRect();
+            camera.aspect = vp.width / vp.height;
+            camera.updateProjectionMatrix();
+
+            renderer.setSize(vp.width, vp.height);
+            effect.setSize(vp.width, vp.height);
+        }
+    </script>
+        <script type="module">
+            import * as THREE from 'https://unpkg.com/three@0.126.1/build/three.module.js';
+
+            import { AsciiEffect } from 'https://unpkg.com/three@0.126.1/examples/jsm/effects/AsciiEffect.js';
+            import { TrackballControls } from 'https://unpkg.com/three@0.126.1/examples/jsm/controls/TrackballControls.js';
+
+            let sphere, plane;
+
+            const start = Date.now();
+
+            init();
+            animate();
+
+            function init() {
+                vp = document.getElementById("cnt_ball").getBoundingClientRect();
+                camera = new THREE.PerspectiveCamera(70, vp.width / vp.height, 1, 1000);
+                camera.position.y = 150;
+                camera.position.z = 700;
+
+                scene = new THREE.Scene();
+                scene.background = new THREE.Color(0, 0, 0);
+
+                const pointLight1 = new THREE.PointLight(0xffffff);
+                pointLight1.position.set(500, 500, 500);
+                scene.add(pointLight1);
+
+                const pointLight2 = new THREE.PointLight(0xffffff, 0.25);
+                pointLight2.position.set(-500, -500, -500);
+                scene.add(pointLight2);
+
+                sphere = new THREE.Mesh(
+                    new THREE.SphereGeometry(200, 20, 10),
+                    new THREE.MeshPhongMaterial({flatShading: true})
+                );
+                scene.add(sphere);
+
+                plane = new THREE.Mesh(new THREE.PlaneGeometry(400, 400), new THREE.MeshBasicMaterial({color: 0xe0e0e0}));
+                plane.position.y = -200;
+                plane.rotation.x = -Math.PI/2;
+                scene.add(plane);
+
+                renderer = new THREE.WebGLRenderer();
+                renderer.setSize(vp.innerWidth, vp.innerHeight);
+                
+                effect = new AsciiEffect(renderer, ' .:-+*=%@#', {invert: true});
+                effect.setSize(vp.width, vp.height);
+                effect.domElement.style.color = 'white';
+                effect.domElement.style.backgroundColor = 'black';
+
+                document.getElementById("cnt_ball").appendChild(effect.domElement);
+
+                controls = new TrackballControls(camera, effect.domElement);
+
+                window.addEventListener('resize', onWindowResize);
+            }
+
+            function onWindowResize() {
+                vp = document.getElementById("cnt_ball").getBoundingClientRect();
+                camera.aspect = vp.width / vp.height;
+                camera.updateProjectionMatrix();
+
+                renderer.setSize(vp.width, vp.height);
+                effect.setSize(vp.width, vp.height);
+            }
+
+            function animate() {
+                requestAnimationFrame(animate);
+                render();
+            }
+
+            function render() {
+                const timer = Date.now() - start;
+
+                sphere.position.y = Math.abs(Math.sin(timer * 0.002)) * 150;
+                sphere.rotation.x = timer * 0.0003;
+                sphere.rotation.z = timer * 0.0002;
+                controls.update();
+                effect.render(scene, camera);
+            }
+        </script>
+    </body>
+<style>
+html, body {
+    background-color: black;
+    color: white;
+    font-family:"Times New Roman";
+}
+#navBar {
+    height: 100%;
+    width: 175px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 8;
+    /*background-color: #111; */
+    overflow-x: hidden;
+    padding-top: 122px;
+    font-weight: bold;
+}
+#navBar div {
+    margin-bottom: 7px;
+}
+#navBar div a{
+    color: white;
+}
+#body {
+    height: auto;
+    margin-left: 175px;
+}
+#mainBody {
+    height: 100%;
+}
+#mainBody .cmp {
+    font-weight: bold;
+}
+#mainBody .date {
+    text-align: right;
+}
+#mainBody .plc {
+    writing-mode: vertical-lr;
+    -ms-writing-mode: tb-rl;
+    transform: rotate(180deg);
+}
+#mainBody table {
+    width: 100%;
+}
+#cnt_ball {
+    height: 80%;
+    width: 95%;
+}
+</style>
+</html>
