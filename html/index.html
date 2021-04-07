@@ -9,7 +9,7 @@
                 <a href="#">Experience</a>
             </div>
             <div id="school">
-                <a href="#">School</a>
+                <a href="#">Education</a>
             </div>
             <div id="projects">
                 <a href="#">Projects</a>
@@ -22,7 +22,8 @@
             <h1 id="name">Stefan Stancu</h1>
             <h3 id="subName">Software Developer (with a sense of adventure)</h3>
             <div id="mainBody">
-                <div id="cnt_experience">
+                <div></div>
+                <div class="container" id="cnt_experience">
                     <h2>Experience</h2>
                     <table>
                         <tr>
@@ -79,10 +80,64 @@
                         </tr>
                     </table>
                 </div>
-                <div id="cnt_school">School</div>
-                <div id="cnt_projects">Projects</div>
-                <div id="cnt_contact">Contact</div>
-                <div id="cnt_ball"></div>
+                <div class="container" id="cnt_school">
+                    <h2>Education</h2>
+                    <h3>University of Toronto</h3>
+                    <img src="school.png" alt="oops">
+                </div>
+                <div class="container" id="cnt_projects">
+                    <h2>Projects</h2>
+                    <div id="carousel" class="carousel">
+                        <div id="cP1">
+                            <h3>Ol' Man</h3>
+                            <div class="imgRow">
+                                <div> <img src="van1h.jpg"> </div>
+                                <div> <img src="van2h.jpg"> </div>
+                                <div> <img src="van3h.jpg"> </div>
+                                <div> <img src="van4h.jpg"> </div>
+                                <div> <img src="van5h.jpg"> </div>
+                                <div> <img src="van6h.jpg"> </div>
+                                <div> <img src="van7h.jpg"> </div>
+                                <div> <img src="van8h.jpg"> </div>
+                            </div>
+                            <b>Features:</b>300 W solar, 300 AH AGM batteries, 5 gallon fresh & grey water tanks, running water, solar shower, fridge, 1000W inverter, battery isolator to van alternator, dinnette style memory foam bed/table, temperature controlled vent, 12V outlets, projector, 2 burner stove, 20lb propane tank, cell signal booster, ceiling mounted surfboard storage 
+                        </div>
+                        <div id="cP2">
+                            <h3>Ultrasound to MRI Using CNN</h3>
+                            <div> <img src="heart.gif"></div>
+                            We attempt to enhance ultrasound imagery using various Generative Adversarial Networks. The Translated images above are <i>generated</i> from the Source.
+                        </div>
+                        <div id="cP3">
+                            <h3>Software Projects</h3>
+                            <table>
+                                <tr>
+                                    <th>Gym Booker</th>
+                                    <td>Desc.</td>
+                                </tr>
+                                <tr>
+                                    <th>Grocer</th>
+                                    <td>Desc.</td>
+                                </tr>
+                                <tr>
+                                    <th>Kalo</th>
+                                    <td>Desc.</td>
+                                </tr>
+                                <tr>
+                                    <th>Crisis</th>
+                                    <td>Desc.</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <br>
+                        <div id="pNavbar">
+                            <button id="cBack">&lt</button>
+                            <div id="pNavBarPos">x****</div>
+                            <button id="cNext">&gt</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="container" id="cnt_contact">Contact</div>
+                <div class="container" id="cnt_ball"></div>
             </div>
         </div>
     <script>
@@ -99,6 +154,10 @@
         }
         hideAll();
         setMainBodyHeight();
+
+        var carousel = new Carousel();
+        document.getElementById("cNext").onclick = (()=>carousel.next());
+        document.getElementById("cBack").onclick = (()=>carousel.previous());
 
         function hideAll() {
             for (let tab of tabs){
@@ -154,6 +213,48 @@
             renderer.setSize(vp.width, vp.height);
             effect.setSize(vp.width, vp.height);
         }
+
+        // Carousel object
+        function Carousel () {
+            this.container = document.getElementById("carousel");
+            this.indicator = document.getElementById("pNavBarPos");
+            this.element_names = ["cP1","cP2","cP3"];
+            this.elements = [];
+            for (el of this.element_names) {
+                this.elements.push(new CarouselItem(el));
+            }
+
+            this.index = 0;
+            this.update = function() {
+                for (el of this.elements) {
+                    el.setHidden();
+                }
+                this.elements[this.index].setVisible();
+                this.indicator.innerHTML = "*".repeat(this.index) + "X" + "*".repeat(this.elements.length - this.index - 1);
+
+            };
+            this.next = function() {
+                this.index = (this.index + 1) % this.elements.length;
+                this.update();
+            };
+            this.previous = function() {
+                this.index --;
+                if (this.index < 0)
+                    this.index = this.elements.length - 1;
+                this.update();
+            };
+            this.update();
+        };
+    
+        function CarouselItem(name) {
+            this.me = document.getElementById(name);
+            this.setVisible = function () {
+                this.me.style["contentVisibility"] = "visible";
+            };
+            this.setHidden = function () {
+                this.me.style["contentVisibility"] = "hidden";
+            };
+        };
     </script>
         <script type="module">
             import * as THREE from 'https://unpkg.com/three@0.126.1/build/three.module.js';
@@ -240,7 +341,7 @@
 html, body {
     background-color: black;
     color: white;
-    font-family:"Times New Roman";
+    font-family:"Arial";
 }
 #navBar {
     height: 100%;
@@ -264,9 +365,6 @@ html, body {
     height: auto;
     margin-left: 175px;
 }
-#mainBody {
-    height: 100%;
-}
 #mainBody .cmp {
     font-weight: bold;
 }
@@ -285,5 +383,27 @@ html, body {
     height: 80%;
     width: 95%;
 }
+.container h2 {
+    margin-top: 0
+}
+#pNavbar { 
+    width: 100%;
+    display: inline-flex;
+    justify-content:space-between;
+}
+.carousel {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+}
+.imgRow { 
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: space-between;
+}
+.imgRow img {
+    padding:5px;
+}
+
 </style>
 </html>
